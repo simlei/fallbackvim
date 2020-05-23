@@ -5,7 +5,6 @@ _declare_dirvar _projbasedir 1
 # TODO: replace the project name to get sane aliases and variables
 _projname=${_projbasedir##*/}; _projname="${_projname//[^A-Za-z]/}"
 
-_declare_dirvar project_${_projname}_Droot 1
-echo eval 'alias '$_projname'_ide="${project_'$_projname'_Droot}/project/ide --name='$_projname'"'
-eval 'alias '$_projname'_ide="${project_'$_projname'_Droot}/project/ide --name='$_projname'"'
+_declare_dirvar project__${_projname}__Droot 1
+eval 'alias '$_projname'_ide="${project__'$_projname'__Droot}/project/ide --name='$_projname'"'
 

@@ -1628,7 +1628,7 @@ command! Q qa!
 " __ MAPPINGS{{{
 
 nmap <F10>rcv :source ~/.vim/vimrc<CR>
-nmap <F10>rce :e ~/.vim/vimrc<CR>
+nmap <F10>rce :e $MYVIMRC<CR>
 nmap <F10>rcb :e ~/.bashrc
 
 xmap K "zy'>"zpgv

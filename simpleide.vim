@@ -19,7 +19,7 @@ fun! _SetupIDEProject(idesrc) abort
     " e.g. the dispatch file is something for the shell, too
     let g:project.loc.Fdispatches = g:project.loc.Dprojectroot . "/dispatches.bash"
 
-    let g:project.vim.loc.Droot = projdir . "/vim"
+    let g:project.vim.loc.Droot = idedir . "/vim"
     let g:project.vim.loc.Dsessions = g:project.vim.loc.Droot . "/" . "sessions"
     let g:project.vim.loc.Dregs = g:project.vim.loc.Droot . "/" . "regs"
     let g:project.vim.loc.Frc = a:idesrc
