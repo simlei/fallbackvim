@@ -28,9 +28,22 @@ vimdrop_build() {
     rm -rf "$targetabs" >/dev/null 2>&1 || :
 
     ( cd "$project__fbvim__Droot"; mkdir -p $targetabs/.vimdrop;
+    echo git archive --format=tar "@" "|" gzip ">" "$targetabs/.vimdrop/repo.tar.gz"
     git archive --format=tar "@" | gzip > "$targetabs/.vimdrop/repo.tar.gz"
-    tar --exclude-vcs -I pigz -cf "$targetabs/.vimdrop/part_essentialplugins.tar.gz" "$packrel/start/"
-    # tar --exclude-vcs -I pigz -cf "$targetabs/.vimdrop/part_opt.tar.gz" "$packrel/opt/"
+    echo tar --exclude-vcs -c "$packrel/start/" "|" gzip ">" "$targetabs/.vimdrop/part_essentialplugins.tar.gz"
+    tar --exclude-vcs -c "$packrel/start/" | gzip > "$targetabs/.vimdrop/part_essentialplugins.tar.gz"
+    for startpack in "$packrel/start"/*; do
+        if [[ ! -d "$startpack" ]]; then continue; fi
+        local packname="$(basename "$startpack")"
+        echo tar --exclude-vcs -c "$startpack/" "|" gzip ">" "$targetabs/.vimdrop/part_start_${packname}.tar.gz"
+        tar --exclude-vcs -c "$startpack/" | gzip > "$targetabs/.vimdrop/part_start_${packname}.tar.gz"
+    done
+    for optpack in "$packrel/opt"/*; do
+        if [[ ! -d "$optpack" ]]; then continue; fi
+        local packname="$(basename "$optpack")"
+        echo tar --exclude-vcs -c "$optpack/" "|" gzip ">" "$targetabs/.vimdrop/part_opt_${packname}.tar.gz"
+        tar --exclude-vcs -c "$optpack/" | gzip > "$targetabs/.vimdrop/part_opt_${packname}.tar.gz"
+    done
     cat > "$targetabs/.vimdrop/vimdrop_inflate.bash" <<-'EOF'
 _declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local varname="${1:-dir}"; local count="${2:-1}"; while [[ "$count" -gt 0 ]]; do _dir="${_dir%/*}"; let count-- || :; done; eval "$varname"'="$_dir"'; }
 _declare_dirvar vimdropdir 0
@@ -38,6 +51,7 @@ _declare_dirvar vimroot 1
 cd "$vimroot"
 tf="$vimdropdir/repo.tar.gz"; tar -xzf "$tf"
 for file in "$vimdropdir"/part_*.tar.gz; do
+    echo extracting $file
     tar -xzf "$file"
 done
 EOF
@@ -45,15 +59,17 @@ EOF
 : ${tmpdir:="/tmp/simlei_vimdrop"} && \
     mkdir -p "$tmpdir" && \
     ( cd "$tmpdir" && \
-        curl -L https://tinyurl.com/vimdroptar | tar -zxf - && \
+        echo downloading and extracting https://tinyurl.com/vimdroptar2 && \
+        curl -L https://tinyurl.com/vimdroptar2 | tar -zxf - && \
+        echo "downloaded and extracted (first stage)" && \
         bash "$tmpdir/.vimdrop/vimdrop_inflate.bash" && \
         ls -la $PWD 
     ) && \
     echo alias v="vim -u $tmpdir/vimrc" && \
     alias v="vim -u $tmpdir/vimrc"
 EOF
-    echo tar -C "$targetabs" -czf "$targetabs/vimdrop.tar.gz" "./.vimdrop/"
-    tar -C "$targetabs" -czf "$targetabs/vimdrop.tar.gz" "./.vimdrop/"
+    echo tar -C "$targetabs" -c "./.vimdrop/" "|" gzip ">" "$targetabs/vimdrop.tar.gz"
+    tar -C "$targetabs" -c "./.vimdrop/" | gzip > "$targetabs/vimdrop.tar.gz"
     )
 }
 
@@ -62,6 +78,13 @@ vimdrop_toDropbox() {
     cp -r "$project__fbvim__Droot/vimdrop_product/vimdrop.tar.gz" "$dbdir"/
     cp -r "$project__fbvim__Droot/vimdrop_product/.vimdrop/vimdrop_download_inflate.bash" "$dbdir"/
 }
+
+vimdrop_build_deploy() (
+    set -euo pipefail
+    vimdrop_build
+    vimdrop_toDropbox
+    echo Success
+)
 
 
 histvim() {

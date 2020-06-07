@@ -1,5 +1,9 @@
 set nocompatible
+exec printf('source %s', expand("<sfile>:p:h")."/bootstrap_RTP.vim")
+
 let mapleader = ","
+
+nmap <C-w><Del><Home> ,k-<C-w>p<C-w><Del><Del><C-m>
 
 exec printf('source %s', expand("<sfile>:p:h")."/fzf.vim")
 exec printf('source %s', expand("<sfile>:p:h")."/java_lsp.vim")
@@ -313,11 +317,37 @@ nmap ;<Space>; ,cp<C-w><up>,cp
 fun! _Linemacros(lines) abort
     let result = []
     for item in a:lines
+        let flattenpat  = '\(.*\){@\*\(.\{-}\)@}\(.*\)'
         let pat  = '{@\(.\{-}\)@}'
-        let item = substitute(item, pat, '\=eval(submatch(1))', 'g')
-        let result += [item]
+        " expand listmacros first!
+        let flattenlist=matchlist(item, flattenpat)
+        if ! empty(flattenlist)
+            let flattenhead=flattenlist[1]
+            let flattenbody=flattenlist[2]
+            let flattentail=flattenlist[3]
+            let flattenevald=eval(flattenbody)
+            if type(flattenevald) == type("string")
+                let result += [flattenhead . flattenevald . flattentail]
+            elseif type(flattenevald) == type([])
+                for part in flattenevald
+                    if type(part) == type("string")
+                        let result += [flattenhead . part . flattentail]
+                    else
+                        let result += [flattenhead . string(part) . flattentail]
+                    endif
+                endfor
+            else
+                let result += [flattenhead . string(flattenevald) . flattentail]
+            endif
+        else
+            let item = substitute(item, pat, '\=eval(submatch(1))', 'g')
+            let result += [item]
+        endif
     endfor
     return result
+endfun
+fun! _dispatch_execglob(globstring) abort
+    return filter(glob(a:globstring,0,1), {i,x->executable(x)})
 endfun
 fun! _Dispatch_ParseFile(file) abort
     let result = []
@@ -331,9 +361,9 @@ fun! _Dispatch_Receiver(file) abort
 endf
 fun! _Dispatch_Receiver_Manual(file) abort
     if empty(a:file) | return | endif
-    " call feedkeys(printf("\<Esc>:Dispatch %s %s", g:_dispatch_opts, a:file))
-    exec printf("Dispatch %s %s", g:_dispatch_opts, a:file)
-    Copen
+    call feedkeys(printf("\<Esc>:Dispatch %s %s", g:_dispatch_opts, a:file))
+    " exec printf("Dispatch %s %s", g:_dispatch_opts, a:file)
+    " Copen
 endf
 fun! _Dispatch_Focus_Receiver(file) abort
     if empty(a:file) | return | endif
@@ -499,7 +529,7 @@ nmap <F9><C-m> <C-w>:let @z=g:_tsdev_uut<CR><C-w>b<C-c><C-w>"z<CR><C-w>p
 nmap <F9>` <C-w>:let @z=expand("%:p")<CR><C-w>b<C-c><C-w>"z<CR><C-w>p
 " }}}
 " YouCompleteMe{{{
-packadd! YouCompleteMe
+silent! packadd! YouCompleteMe
 let g:ycm_extra_conf_vim_data = []
 
 let g:ycm_log_level='debug'

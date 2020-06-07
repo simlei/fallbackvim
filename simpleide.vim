@@ -44,13 +44,11 @@ fun! _SetupIDEProject(idesrc) abort
 
     call mkdir(g:project.vim.loc.Dsessions, "p")
 
+    call _PerformProjectSettings()
+
+
     nmap <F10>S :source <C-r>=g:project.vim.loc.Dsessions<CR>/session_
     nmap <F10>s :Obsession! <C-r>=g:project.vim.loc.Dsessions<CR>/session_
-
-    " bridge let effective = new
-    let g:_dispatch_opts = g:project.vim.dispatch.opts
-    let g:_dispatch_listfile = g:project.vim.dispatch.Flist
-    let g:_regfiles_dir = g:project.vim.loc.Dregs
 
     exec printf("cd %s", fnameescape(g:project.loc.Droot))
 
@@ -60,4 +58,11 @@ fun! _SetupIDEProject(idesrc) abort
     " Debug
     nmap <F10>rcpP o<C-r>=string(g:project)<CR><Esc>:.s/'/"/g<CR>:.!python -mjson.tool<CR>
 
+endf
+
+fun! _PerformProjectSettings() abort
+    " bridge let effective = new
+    let g:_dispatch_opts = g:project.vim.dispatch.opts
+    let g:_dispatch_listfile = g:project.vim.dispatch.Flist
+    let g:_regfiles_dir = g:project.vim.loc.Dregs
 endf
