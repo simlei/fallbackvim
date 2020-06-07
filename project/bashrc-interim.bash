@@ -1,3 +1,6 @@
+# local vimdrop:
+# export tmpdir="$PWD"; export tarloc="file://$HOME/.vim/vimdrop_product/vimdrop.tar.gz"; cat /home/simon/.vim/vimdrop_product/.vimdrop/vimdrop_download_inflate.bash | bash
+
 _declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local varname="${1:-dir}"; local count="${2:-1}"; while [[ "$count" -gt 0 ]]; do _dir="${_dir%/*}"; let count-- || :; done; eval "$varname"'="$_dir"'; }
 _declare_dirvar _projdefdir 0
 _declare_dirvar _projbasedir 1
@@ -30,20 +33,20 @@ vimdrop_build() {
     ( cd "$project__fbvim__Droot"; mkdir -p $targetabs/.vimdrop;
     echo git archive --format=tar "@" "|" gzip ">" "$targetabs/.vimdrop/repo.tar.gz"
     git archive --format=tar "@" | gzip > "$targetabs/.vimdrop/repo.tar.gz"
-    echo tar --exclude-vcs -c "$packrel/start/" "|" gzip ">" "$targetabs/.vimdrop/part_essentialplugins.tar.gz"
-    tar --exclude-vcs -c "$packrel/start/" | gzip > "$targetabs/.vimdrop/part_essentialplugins.tar.gz"
+    # echo tar --exclude-vcs -c "$packrel/start/" "|" gzip ">" "$targetabs/.vimdrop/part_essentialplugins.tar.gz"
+    # tar --exclude-vcs -c "$packrel/start/" | gzip > "$targetabs/.vimdrop/part_essentialplugins.tar.gz"
     for startpack in "$packrel/start"/*; do
         if [[ ! -d "$startpack" ]]; then continue; fi
         local packname="$(basename "$startpack")"
         echo tar --exclude-vcs -c "$startpack/" "|" gzip ">" "$targetabs/.vimdrop/part_start_${packname}.tar.gz"
         tar --exclude-vcs -c "$startpack/" | gzip > "$targetabs/.vimdrop/part_start_${packname}.tar.gz"
     done
-    for optpack in "$packrel/opt"/*; do
-        if [[ ! -d "$optpack" ]]; then continue; fi
-        local packname="$(basename "$optpack")"
-        echo tar --exclude-vcs -c "$optpack/" "|" gzip ">" "$targetabs/.vimdrop/part_opt_${packname}.tar.gz"
-        tar --exclude-vcs -c "$optpack/" | gzip > "$targetabs/.vimdrop/part_opt_${packname}.tar.gz"
-    done
+    # for optpack in "$packrel/opt"/*; do
+    #     if [[ ! -d "$optpack" ]]; then continue; fi
+    #     local packname="$(basename "$optpack")"
+    #     echo tar --exclude-vcs -c "$optpack/" "|" gzip ">" "$targetabs/.vimdrop/part_opt_${packname}.tar.gz"
+    #     tar --exclude-vcs -c "$optpack/" | gzip > "$targetabs/.vimdrop/part_opt_${packname}.tar.gz"
+    # done
     cat > "$targetabs/.vimdrop/vimdrop_inflate.bash" <<-'EOF'
 _declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local varname="${1:-dir}"; local count="${2:-1}"; while [[ "$count" -gt 0 ]]; do _dir="${_dir%/*}"; let count-- || :; done; eval "$varname"'="$_dir"'; }
 _declare_dirvar vimdropdir 0
@@ -57,10 +60,11 @@ done
 EOF
     cat > "$targetabs/.vimdrop/vimdrop_download_inflate.bash" <<-"EOF"
 : ${tmpdir:="/tmp/simlei_vimdrop"} && \
+: ${tarloc:="https://tinyurl.com/vimdroptar2"} && \
     mkdir -p "$tmpdir" && \
     ( cd "$tmpdir" && \
-        echo downloading and extracting https://tinyurl.com/vimdroptar2 && \
-        curl -L https://tinyurl.com/vimdroptar2 | tar -zxf - && \
+        echo downloading and extracting "$tarloc" && \
+        curl -L "$tarloc" | tar -zxf - && \
         echo "downloaded and extracted (first stage)" && \
         bash "$tmpdir/.vimdrop/vimdrop_inflate.bash" && \
         ls -la $PWD 

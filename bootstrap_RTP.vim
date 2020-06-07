@@ -15,12 +15,12 @@ if ! empty(glob(g:_vim_instance.probable_source_rtdir))
     " echom "found vim source runtime to be more precise: " . g:_vim_instance.probable_source_rtdir
     let $VIMRUNTIME=g:_vim_instance.probable_source_rtdir
     let $VIM=g:_vim_instance.probable_source_vimdir
-    echom "rtp orig:" . &rtp
+    " echom "rtp orig:" . &rtp
     let &runtimepath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIMRUNTIME, '\'), g:_vim_instance.probable_source_rtdir, 'g')
     let &runtimepath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIM, '\'), g:_vim_instance.probable_source_vimdir, 'g')
     let &packpath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIMRUNTIME, '\'), g:_vim_instance.probable_source_rtdir, 'g')
     let &packpath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIM, '\'), g:_vim_instance.probable_source_vimdir, 'g')
-    echom "rtp afte:" . &rtp
+    " echom "rtp afte:" . &rtp
 endif
 
 " for debugging:

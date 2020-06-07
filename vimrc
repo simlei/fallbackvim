@@ -1,4 +1,5 @@
 set nocompatible
+let $MYVIMRC=expand("<sfile>:p")
 exec printf('source %s', expand("<sfile>:p:h")."/bootstrap_RTP.vim")
 
 let mapleader = ","
