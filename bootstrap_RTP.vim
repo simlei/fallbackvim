@@ -1,5 +1,4 @@
-
-if ! empty('g:_vim_instance')
+if ! exists('g:_vim_instance')
 
     let g:_vim_instance={}
     let g:_vim_instance.cmd = v:argv[0]
@@ -20,8 +19,10 @@ if ! empty('g:_vim_instance')
         " echom "rtp orig:" . &rtp
         let &runtimepath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIMRUNTIME, '\'), g:_vim_instance.probable_source_rtdir, 'g')
         let &runtimepath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIM, '\'), g:_vim_instance.probable_source_vimdir, 'g')
-        let &packpath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIMRUNTIME, '\'), g:_vim_instance.probable_source_rtdir, 'g')
-        let &packpath = substitute(&runtimepath, '\V'.escape(g:_vim_instance.orig_VIM, '\'), g:_vim_instance.probable_source_vimdir, 'g')
+        let &packpath = substitute(&packpath, '\V'.escape(g:_vim_instance.orig_VIMRUNTIME, '\'), g:_vim_instance.probable_source_rtdir, 'g')
+        let &packpath = substitute(&packpath, '\V'.escape(g:_vim_instance.orig_VIM, '\'), g:_vim_instance.probable_source_vimdir, 'g')
+        let &helpfile = substitute(&helpfile, '\V'.escape(g:_vim_instance.orig_VIMRUNTIME, '\'), g:_vim_instance.probable_source_rtdir, 'g')
+        let &helpfile = substitute(&helpfile, '\V'.escape(g:_vim_instance.orig_VIM, '\'), g:_vim_instance.probable_source_vimdir, 'g')
         " echom "rtp afte:" . &rtp
     endif
 
