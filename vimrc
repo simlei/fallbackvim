@@ -267,7 +267,7 @@ let g:tablabel = "%N%{flagship#tabmodified()} %{flagship#tabcwds('shorten',',')}
 fun! _Path_minimize(path, ...) abort
     let length = get(a:, 1, 1)
     let suffix=get(a:, 2, "")
-    return substitute(a:path, '\([^/]\+\)', '\=_Path_Part_Shrink(submatch(1), length, suffix)', "g")
+    return substitute(a:path, '\([^/.]\+\)', '\=_Path_Part_Shrink(submatch(1), length, suffix)', "g")
 endf
 fun! _Path_Part_Shrink(part, length, suffix) abort
     if len(a:part) <= a:length + strchars(a:suffix)
