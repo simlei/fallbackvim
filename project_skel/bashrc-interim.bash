@@ -6,5 +6,7 @@ _declare_dirvar _projbasedir 1
 _projname=${_projbasedir##*/}; _projname="${_projname//[^A-Za-z]/}"
 
 _declare_dirvar project__${_projname}__Droot 1
+export project__${_projname}__Droot
+
 eval 'alias '$_projname'_ide="${project__'$_projname'__Droot}/project/ide --name='$_projname'"'
 
