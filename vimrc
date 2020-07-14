@@ -1,6 +1,10 @@
 set nocompatible
 let $MYVIMRC=expand("<sfile>:p")
 exec printf('source %s', expand("<sfile>:p:h")."/bootstrap_RTP.vim")
+let g:ycm_auto_hover=''
+
+" ensure unmap after reload
+exec printf('source %s', expand("<sfile>:p:h")."/after/plugin/unmap.vim")
 
 let mapleader = ","
 
@@ -17,8 +21,8 @@ let g:_regfiles_dir=expand("~/.vim/regs")
 nmap <F10>" :e <C-r>=g:_regfiles_dir<CR><CR>
 
 nnoremap Q q
-nmap <nowait> ,q <plug>(Mac_Play)
-nmap <nowait> q <plug>(Mac_RecordNew)
+nmap <nowait> q <plug>(Mac_Play)
+nmap <nowait> ,q <plug>(Mac_RecordNew)
 nmap ;qh :DisplayMacroHistory<cr>
 
 nmap ;qk <plug>(Mac_RotateBack)
@@ -311,7 +315,7 @@ let g:_dispatch_opts = ""
 nmap ;<Space>mf :call SelectOne(funcref("_Dispatch_Focus_Receiver"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 nmap ;<Space>m<Space> :call SelectOne(funcref("_Dispatch_Receiver"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 nmap ;<Space>M<Space> :call SelectOne(funcref("_Dispatch_Receiver_Manual"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
-nmap ;<Space>; ,cp<C-w><up>,cp
+
 
 " let g:_dispatch_opts = "-compiler=pyscript"
 
@@ -352,23 +356,24 @@ fun! _dispatch_execglob(globstring) abort
 endfun
 fun! _Dispatch_ParseFile(file) abort
     let result = []
-    let lines = filter(readfile(a:file), { i,x -> ! empty(trim(x))})
+    let lines = filter(readfile(a:file), { i,x -> ! empty(trim(x)) && match(x, '^\s*#') == -1 })
     let result = _Linemacros(lines)
+    echom string(result)
     return result
 endfun
 fun! _Dispatch_Receiver(file) abort
     if empty(a:file) | return | endif
-    exec printf("Dispatch %s %s", g:_dispatch_opts, a:file)
+    exec printf("Dispatch %s", a:file)
 endf
 fun! _Dispatch_Receiver_Manual(file) abort
     if empty(a:file) | return | endif
-    call feedkeys(printf("\<Esc>:Dispatch %s %s", g:_dispatch_opts, a:file))
+    call feedkeys(printf("\<Esc>:Dispatch %s", a:file))
     " exec printf("Dispatch %s %s", g:_dispatch_opts, a:file)
     " Copen
 endf
 fun! _Dispatch_Focus_Receiver(file) abort
     if empty(a:file) | return | endif
-    exec printf("FocusDispatch %s %s", g:_dispatch_opts, a:file)
+    exec printf("FocusDispatch %s", a:file)
 endf
 
 let g:dispatchlist = []
@@ -579,8 +584,9 @@ nnoremap <F10>__ycm__r :YcmCompleter GoToReferences<CR>
 nnoremap <F10>__ycm__T :YcmCompleter GetTypeImprecise<CR>
 nnoremap <F10>__ycm__t :YcmCompleter GetType<CR>
 
-nnoremap <F10>__ycm__D :YcmCompleter GetDocImprecise<CR>
-nnoremap <F10>__ycm__d :YcmCompleter GetDoc<CR>
+nmap <F10>__ycm__d <plug>(YCMHover)
+nnoremap <F10>__ycm__<Space>d :YcmCompleter GetDocImprecise<CR>
+nnoremap <F10>__ycm__D :YcmCompleter GetDoc<CR>
 
 nnoremap <F10>__ycm__F :YcmCompleter FixIt<CR>
 nnoremap <F10>__ycm__fix :YcmCompleter FixIt<CR>
