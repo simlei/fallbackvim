@@ -1,1 +1,2 @@
-echo hello new project!
+{@*_dispatch_execglob(g:project.loc.Droot . "/bin/*")@}
+

@@ -30,7 +30,10 @@ fun! _SetupIDEProject(idesrc) abort
     let g:project.vim.dispatch.Flist = g:project.loc.Fdispatches
 
     let g:project.name = "#UNSET#"
-    if exists("g:_simpleide_projname") !=# '$VIM__PROJECTNAME'
+    if ! exists("g:_simpleide_projname")
+        let g:_simpleide_projname = "#UNSET#"
+    endif
+    if g:_simpleide_projname !=# "#UNSET#"
         let g:project.name = g:_simpleide_projname
     endif
 
@@ -66,3 +69,41 @@ fun! _PerformProjectSettings() abort
     let g:_dispatch_listfile = g:project.vim.dispatch.Flist
     let g:_regfiles_dir = g:project.vim.loc.Dregs
 endf
+
+command! -nargs=1 ShortcutExt call _shortcutExt(<f-args>)
+fun! _shortcutExt(key) abort
+    call feedkeys("\<plug>(ext)".a:key, "i")
+endf
+
+fun! _project_currentproject_selection() abort
+    let selection = readfile($project__currentproject__Droot . "/lastselection.txt")
+    return selection
+endfun
+command! -nargs=+ GetExtSel call _project_currentproject_selection_reg(<f-args>)
+fun! _project_currentproject_selection_reg(regname, ...) abort
+    let mode=get(a:, 1, "V")
+    let sel = _project_currentproject_selection()
+    call filter(sel, {i,x -> ! empty(trim(x))})
+    if len(sel) == 0
+        call setreg(a:regname, "", mode)
+    elseif len(sel) == 1
+        call setreg(a:regname, sel[0], mode)
+    else
+        call setreg(a:regname, sel, mode)
+    endif
+endfun
+
+
+
+fun! _project_register_as_vimide() abort
+    if ! exists("v:servername") || empty(v:servername)
+        if g:project.name ==# "#UNSET#"
+            let servername = "ADHOC"
+        else
+            let servername = g:project.name
+        endif
+        call remote_startserver(servername)
+        echom "started server: " . servername
+    endif
+    call system("currentproject_vimide_setservername " . v:servername)
+endfun

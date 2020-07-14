@@ -10,7 +10,7 @@ else
     _projname="#UNSET#"
 fi
 
-if [[ "$_projname" != "#UNSET" ]]; then
+if [[ "$_projname" == "#UNSET#" ]]; then
     vim -c "source $projdir/ide.vim" "$@"
 else
     vim --cmd "let g:_simpleide_projname='$_projname'" -c "source $projdir/ide.vim" "$@"

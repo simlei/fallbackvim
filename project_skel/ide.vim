@@ -8,4 +8,5 @@ call _SetupIDEProject(s:_loc)
 " cd
 exec printf("cd %s", project.loc.Droot)
 
-
+" this should be called to register as vimide | /home/snuc/.vim/simpleide.vim:99
+" call _project_register_as_vimide()

@@ -9,4 +9,10 @@ _declare_dirvar project__${_projname}__Droot 1
 export project__${_projname}__Droot
 
 eval 'alias '$_projname'_ide="${project__'$_projname'__Droot}/project/ide --name='$_projname'"'
-
+# --OR-- (remove above line)
+# in case you want to use this with "currentproject" shortcuts
+# XXX_ide() {
+#     "$project__currentproject__Droot/bin/markwin_vimide"
+#     "$project__currentproject__Droot/bin/mark_last_servername" XXX
+#     "$project__XXX__Droot/project/ide" --name=XXX
+# }

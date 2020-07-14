@@ -18,6 +18,7 @@ eval 'alias '$_projname'_ide="${project__'$_projname'__Droot}/project/ide --name
 vim_projectdrop() {
     mkdir ./project && cp -r "$project__fbvim__Droot/project_skel"/* ./project/
     echo "source $PWD/project/bashrc-interim.bash" >> "$HOME/.bashrc"
+    vim ./project/bashrc-interim.bash && exec bash
 }
 
 # tar plugins into .vimdrop
