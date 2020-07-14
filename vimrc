@@ -749,6 +749,9 @@ nmap <silent> <S-down> :set lazyredraw<CR><Leader>j<Leader>cj<Leader>X:set nolaz
 nmap <silent> <C-Up> ,cpk<c-m>
 nmap <silent> <C-Down> ,cpj<c-m>
 
+"TODO: bug: <C-w><Up> changes jump history
+nmap ,c<Space> <C-w>b10<C-w>+<C-w>p
+
 nmap <Leader>crr :call qf#switch(1,1,0)<bar>CResize<bar>exec "normal ggG" <bar> call qf#switch(1,0,0)<CR>
 nmap <Leader>arr :call qf#switch(2,1,1)<bar>CResize <bar>exec "normal ggG" <bar> wincmd p<CR>
 
@@ -1807,7 +1810,6 @@ augroup dirvish_config
     \|  nmap <buffer> <Leader><cr> :Viewer <C-R><C-a><CR>
     \|  nmap <buffer> <Leader><CR> :Viewer <C-R><C-a><CR>
     \|  nmap <buffer> <Leader><C-g> :Grepper -dir file<CR>
-    \|  nnoremap <buffer> q q
     \|  nnoremap <F10><Space> :TS -cwd=<C-r>=expand("%:p:h")<CR><CR>
     \|  nnoremap <Leader>gd :e <C-r>=getcwd(-1)<CR><CR>
 
