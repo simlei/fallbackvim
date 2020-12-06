@@ -37,15 +37,15 @@ fun! _SetupIDEProject(idesrc) abort
         let g:project.name = g:_simpleide_projname
     endif
 
-    " configure by environment if available
-    if g:project.name !=# "#UNSET#"
-        " extend g:project directories and files
-        call extend(g:project.loc, Envsdict("g:project__" . g:project.name . "__F", "F"))
-        call extend(g:project.loc, Envsdict("g:project__" . g:project.name . "__D", "D"))
-        call extend(g:project.loc, Envsdict("g:project__" . g:project.name . "__X", "X"))
-    endif
+    " " configure by environment if available
+    " if g:project.name !=# "#UNSET#"
+    "     " extend g:project directories and files
+    "     call extend(g:project.loc, Envsdict("g:project__" . g:project.name . "__F", "F"))
+    "     call extend(g:project.loc, Envsdict("g:project__" . g:project.name . "__D", "D"))
+    "     call extend(g:project.loc, Envsdict("g:project__" . g:project.name . "__X", "X"))
+    " endif
 
-    call mkdir(g:project.vim.loc.Dsessions, "p")
+    silent! call mkdir(g:project.vim.loc.Dsessions, "p")
 
     call _PerformProjectSettings()
 

@@ -1,3 +1,4 @@
+" echo "BOOTSTRAP: start bootstrap sequence"
 if ! exists('g:_vim_instance')
 
     let g:_vim_instance={}
@@ -124,13 +125,14 @@ if ! exists('g:_vim_instance')
     """""""""""
 
     fun! _PathSettingPrepend(setting, part) abort
+        " echom printf("DBG: _PathSettingPrepend('%s', '%s')", string(a:setting), string(a:part))
         exec printf('set %s^=%s', a:setting, a:part)
     endf
 
-    command! -nargs=+ PathAddPP call _PathSettingPrepend("packpath", _cmdPath(<f-args>))
-    command! -nargs=+ PathAddRTP call _PathSettingPrepend("runtimepath", _cmdPath(<f-args>))
+    command! -nargs=+ -bar PathAddPP call _PathSettingPrepend("packpath", _cmdPath(<f-args>))
+    command! -nargs=+ -bar PathAddRTP call _PathSettingPrepend("runtimepath", _cmdPath(<f-args>))
 
-    command! -nargs=+ Src execute printf("source %s", _cmdPath(<f-args>))
+    command! -nargs=+ -bar Src execute printf("source %s", _cmdPath(<f-args>))
 
     fun! _cmdPath(...) abort
         let args=[]
@@ -156,3 +158,4 @@ if ! exists('g:_vim_instance')
 
 endif
 
+" echo "BOOTSTRAP: end bootstrap sequence"

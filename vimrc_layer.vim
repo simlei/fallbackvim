@@ -1,13 +1,11 @@
-set nocompatible
-echoe "~/.vimrc is sourced; this is considered an error for debugging purpose. look into ~/.bin/vim and nearby bootstrapping scripts."
-finish
-
-let $MYVIMRC=expand("<sfile>:p")
-exec printf('source %s', expand("<sfile>:p:h")."/bootstrap_RTP.vim")
 let g:ycm_auto_hover=''
 
+"" default dispatch stuff
+let g:_dispatch_opts = "-compiler=python"
+let g:_dispatch_listfile = expand("<sfile>:p:h")."/project_skel/dispatches.bash"
+
 " ensure unmap after reload
-exec printf('source %s', expand("<sfile>:p:h")."/after/plugin/unmap.vim")
+" exec printf('source %s', expand("<sfile>:p:h")."/after/plugin/unmap.vim")
 
 let mapleader = ","
 
@@ -23,9 +21,19 @@ exec printf('source %s', expand("<sfile>:p:h")."/simpleide.vim")
 let g:_regfiles_dir=expand("~/.vim/regs")
 nmap <F10>" :e <C-r>=g:_regfiles_dir<CR><CR>
 
+"" Okt 2020
+
+"" End Okt 2020
+
+
+nmap ,,<CR> :let @z=expand("<cfile>")<CR>:Viewer z<CR>
+
 nnoremap Q q
+xnoremap Q q
 nmap <nowait> q <plug>(Mac_Play)
 nmap <nowait> ,q <plug>(Mac_RecordNew)
+xmap <nowait> q <plug>(Mac_Play)
+xmap <nowait> ,q <plug>(Mac_RecordNew)
 nmap ;qh :DisplayMacroHistory<cr>
 
 nmap ;qk <plug>(Mac_RotateBack)
@@ -110,7 +118,7 @@ tmap <F10><F10>R <C-w>:echo trim(system("kbreload"))<CR><CR>
 
 " Environment_dicts
 function! Envsdict(prefix, ...) abort
-    let filtered = cnviron()
+    let filtered = environ()
     call filter(filtered, {i,x -> stridx(i, a:prefix) == 0})
     let prefixrepl=get(a:, 1, a:prefix)
     let mapped = {}
@@ -191,7 +199,8 @@ nmap <C-w><Del><Space> :Bdelete!<CR>
 " sync up lines and zz
 nmap <F10>= :let _linenr=line(".")<CR>zz<C-w>p:<C-r>=_linenr<CR><CR>zz<C-w>p
 
-command! -nargs=1 Viewer execute printf('Spawn xdg-open %s', fnameescape(<f-args>))
+command! -nargs=1 Viewer execute printf('Dispatch xdg-open %s', fnameescape(<f-args>)) | cclose | redraw!
+command! -nargs=1 Executor execute printf('Dispatch -compiler=bashoo %s', fnameescape(<f-args>)) | cclose | redraw!
 
 " go to getcwd()
 nmap <silent> <F10>dg :exec printf('e %s/', getcwd(-1))<CR>
@@ -314,7 +323,9 @@ nmap ;<Space>? :nmap ;<lt>Space><CR>
 fun! _GetDispatchOpts() abort
     return g:_dispatch_opts
 endf
-let g:_dispatch_opts = ""
+if ! exists('g:_dispatch_opts')
+    let g:_dispatch_opts = ""
+endif
 nmap ;<Space>mf :call SelectOne(funcref("_Dispatch_Focus_Receiver"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 nmap ;<Space>m<Space> :call SelectOne(funcref("_Dispatch_Receiver"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 nmap ;<Space>M<Space> :call SelectOne(funcref("_Dispatch_Receiver_Manual"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
@@ -361,7 +372,6 @@ fun! _Dispatch_ParseFile(file) abort
     let result = []
     let lines = filter(readfile(a:file), { i,x -> ! empty(trim(x)) && match(x, '^\s*#') == -1 })
     let result = _Linemacros(lines)
-    echom string(result)
     return result
 endfun
 fun! _Dispatch_Receiver(file) abort
@@ -416,6 +426,10 @@ cmap <C-R>5 <C-R>=expand("%:p")<CR>
 
 " Only for the duration.. .(Mappigns){{{
 nmap <F10>G :Grepper -dir repo,file<Space>
+" runtime plugin/grepper.vim
+" let g:grepper.git.grepprg .= 'i'
+
+
 imap <Insert>a ${[@]}<Left><Left><Left><Left>
 imap <Insert>z "$"<Left>
 inoremap <Insert>i if [[ <C-o>mz ]]; then<CR>fi<C-o>`z<Right>
@@ -564,7 +578,7 @@ let pumheight=25
 command! -bar YCMI let g:ycm_autoclose_preview_window_after_insertion = ! g:ycm_autoclose_preview_window_after_insertion <bar> echo 'g:ycm_autoclose_preview_window_after_insertion toggled to: '.g:ycm_autoclose_preview_window_after_insertion
 command! -bar YCMC let g:ycm_autoclose_preview_window_after_completion= ! g:ycm_autoclose_preview_window_after_completion <bar> echo 'g:ycm_autoclose_preview_window_after_completion toggled to: '.g:ycm_autoclose_preview_window_after_completion
 
-let g:ycm_goto_buffer_command = 'same-buffer' 
+let g:ycm_goto_buffer_command = 'split-or-existing-window' 
 let g:ycm_key_invoke_completion = '<C-Space>' 
 let g:ycm_key_list_stop_completion = ['<cr>']
 let g:ycm_key_list_select_completion = ['<Down>', '<C-j>']
@@ -1670,7 +1684,7 @@ command! Q qa!
 "}}}
 " __ MAPPINGS{{{
 
-nmap <F10>rcv :source ~/.vim/vimrc<CR>
+nmap <F10>rcv :source $MYVIMRC<CR>
 nmap <F10>rce :e $MYVIMRC<CR>
 nmap <F10>rcb :e ~/.bashrc
 
@@ -1800,21 +1814,6 @@ endf
 
 augroup dirvish_config
   autocmd!
-
-    autocmd FileType dirvish nnoremap <silent><buffer>
-    \   gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>
-    \|  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
-    \|  nmap <buffer> r R
-    \|  nmap <buffer> <Leader>cd :cd %<CR>R:pwd<CR>
-    \|  nmap <buffer> <Leader>ed :e %
-    \|  nmap <buffer> <Leader>md :Mkdir %
-    \|  nmap <buffer> <Leader>~ :e $HOME/<CR>
-    \|  nmap <buffer> <Leader>// :e /<CR>
-    \|  nmap <buffer> <Leader><cr> :Viewer <C-R><C-a><CR>
-    \|  nmap <buffer> <Leader><CR> :Viewer <C-R><C-a><CR>
-    \|  nmap <buffer> <Leader><C-g> :Grepper -dir file<CR>
-    \|  nnoremap <F10><Space> :TS -cwd=<C-r>=expand("%:p:h")<CR><CR>
-    \|  nnoremap <Leader>gd :e <C-r>=getcwd(-1)<CR><CR>
 
     autocmd VimEnter * if exists('#FileExplorer') | exe 'au! FileExplorer *' | endif
 augroup END
@@ -3492,4 +3491,3 @@ fun! OldFunfunid(name) abort
 endf
 "}}}
 " vim: fdm=marker
-

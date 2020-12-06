@@ -11,9 +11,7 @@ _projname=fbvim; _projname="${_projname//[^A-Za-z]/}"
 _declare_dirvar project__${_projname}__Droot 1
 eval 'alias '$_projname'_ide="${project__'$_projname'__Droot}/project/ide --name='$_projname'"'
 
-
-
-
+export PATH="$project__fbvim__Droot/bin:$PATH"
 
 vim_projectdrop() {
     mkdir ./project && cp -r "$project__fbvim__Droot/project_skel"/* ./project/

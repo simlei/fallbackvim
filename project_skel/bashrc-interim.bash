@@ -3,7 +3,7 @@ _declare_dirvar _projdefdir 0
 _declare_dirvar _projbasedir 1
 
 # TODO: replace the project name to get sane aliases and variables
-_projname=${_projbasedir##*/}; _projname="${_projname//[^A-Za-z]/}"
+_projname=${_projbasedir##*/}; _projname="${_projname//[^A-Za-z_]/}"
 
 _declare_dirvar project__${_projname}__Droot 1
 export project__${_projname}__Droot

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# _declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local varname="${1:-dir}"; local count="${2:-1}"; while [[ "$count" -gt 0 ]]; do _dir="${_dir%/*}"; let count-- || :; done; eval "$varname"'="$_dir"'; }
+# _declare_dirvar path 0
+# _declare_dirvar localvimdir 1
+
+if [[ $1 == "--dependencies" ]]; then
+    sudo apt install 
+        libncurses5-dev  \
+        libgtk2.0-dev  \
+        libatk1.0-dev  \
+        libcairo2-dev  \
+        libx11-dev  \
+        libxpm-dev  \
+        libxt-dev  \
+        python2-dev  \
+        python3-dev  \
+        ruby-dev  \
+        lua5.2  \
+        liblua5.2-dev  \
+        libperl-dev  \
+        git
+    shift
+fi
+
+./configure --with-features=huge \
+            --enable-multibyte \
+            --enable-rubyinterp=yes \
+            --enable-python3interp=yes \
+            --with-python3-config-dir=$(python3-config --configdir) \
+            --enable-perlinterp=yes \
+            --enable-luainterp=yes \
+            --enable-gui=gtk2 \
+            --enable-cscope \
+            "$@"    
+
+

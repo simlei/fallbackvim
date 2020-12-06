@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+_declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local varname="${1:-dir}"; local count="${2:-1}"; while [[ "$count" -gt 0 ]]; do _dir="${_dir%/*}"; let count-- || :; done; eval "$varname"'="$_dir"'; }
+_declare_dirvar path 0
+_declare_dirvar localvimdir 1
+read -r origvim < <(
+    export PATH="${PATH//$path:/}"
+    hash -d 'vim'
+    which vim
+)
+passedargs=()
+while [[ ! -z ${1:+x} ]]; do
+    if [[ "$1" == "--orig-vim" ]]; then
+        echo "actual vim program path: $origvim"
+        shift
+        exit 0
+    else
+        passedargs+=("$1")
+        shift
+    fi
+done
+# echo DBG: exec "$origvim" "${passedargs[@]}"
+exec "$origvim" "${passedargs[@]}"
