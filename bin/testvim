@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 /home/snuc/sandbox/installations/HEADvim_local/bin/vim \
 --cmd 'source /home/snuc/.vim/bin/testvim_vimrc' \
---cmd 'PathAddPP /home/snuc/.vim' --cmd 'PathAddRTP /home/snuc/.vim' --cmd 'PathAddRTP /home/snuc/.vim/after' --cmd 'ReadPathE &rtp' \
+--cmd 'PathAddPP /home/snuc/.vim' --cmd 'PathAddRTP /home/snuc/.vim' --cmd 'PathAddRTP /home/snuc/.vim/after' \
 "$@"
 
