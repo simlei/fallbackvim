@@ -1,8 +1,8 @@
-" echo "BOOTSTRAP: start bootstrap sequence"
+echo "BOOTSTRAP: start bootstrap sequence"
 if ! exists('g:_vim_instance')
 
     let g:_vim_instance={}
-    let g:_vim_instance.cmd = v:argv[0]
+    let g:_vim_instance.cmd = "/home/snuc/sandbox/installations/HEADvim_local/bin/vim"
     if g:_vim_instance.cmd[0] != '/'
         let g:_vim_instance.executable = resolve(systemlist("which ".g:_vim_instance.cmd)[0])
     else
@@ -115,8 +115,8 @@ if ! exists('g:_vim_instance')
     endfor
     " echom 'let &runtimepath = ' . join(vimruntime.stock_vim_init.newRTPList, ",")
     " echom 'let &packpath = ' . join(vimruntime.stock_vim_init.newPPList, ",")
-    " let &runtimepath = join(vimruntime.stock_vim_init.newRTPList, ",")
-    " let &packpath = join(vimruntime.stock_vim_init.newPPList, ",")
+    let &runtimepath = join(vimruntime.stock_vim_init.newRTPList, ",")
+    let &packpath = join(vimruntime.stock_vim_init.newPPList, ",")
 
     "}}}
 
@@ -171,4 +171,3 @@ if ! exists('g:_vim_instance')
 endif
 
 " echo "BOOTSTRAP: end bootstrap sequence"
-

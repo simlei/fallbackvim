@@ -1,5 +1,4 @@
 " echo "BOOTSTRAP: start bootstrap sequence"
-echom "ARGV: " . join(v:argv, "::")
 if ! exists('g:_vim_instance')
 
     let g:_vim_instance={}
