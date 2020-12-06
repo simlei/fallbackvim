@@ -3,5 +3,6 @@ _declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local var
 _declare_dirvar path 0
 _declare_dirvar localvimdir 1
 
+export VIMINIT_ORIG="$VIMINIT" # TODO: process this somewhere
 export VIMINIT="source $localvimdir/vimrc_bootstrap.vim"
 origvim --cmd "source $localvimdir/bootstrap_RTP.vim" "$@"

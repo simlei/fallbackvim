@@ -4,5 +4,7 @@ endf
 fun! _PrependPackpath(part) abort
 	let &packpath=a:part.",".&packpath
 endf
-command! -nargs=+ -bar PathAddPP call _PrependPackpath(<f-args>)
-command! -nargs=+ -bar PathAddRTP call _PrependRuntimepath(<f-args>)
+" command! -nargs=+ -bar PathAddPP call _PrependPackpath(<f-args>)
+" command! -nargs=+ -bar PathAddRTP call _PrependRuntimepath(<f-args>)
+    command! -nargs=+ -bar PathAddPP set packpath^=<args>
+    command! -nargs=+ -bar PathAddRTP set runtimepath^=<args>

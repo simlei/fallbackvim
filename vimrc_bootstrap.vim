@@ -44,4 +44,22 @@ endf
 
 " Set it off...
 let $MYVIMRC=expand("<sfile>:p")
+fun! _calcRuntimepath()
+	let recalculatedParts = g:vimruntime.stock_vim_init.newRTPList
+	let beforeParts = g:vimruntime.stock_vim_init.prependRTPList
+	let afterParts = g:vimruntime.stock_vim_init.appendRTPList
+	let &runtimepath = join(beforeParts+recalculatedParts+afterParts, ",")
+endfun
+fun! _calcPackpath()
+	let recalculatedParts = g:vimruntime.stock_vim_init.newPPList
+	let beforeParts = g:vimruntime.stock_vim_init.prependPPList
+	let afterParts = g:vimruntime.stock_vim_init.appendPPList
+	let &packpath = join(beforeParts+recalculatedParts+afterParts, ",")
+endfun
+call _calcRuntimepath()
+	" echom "Runtimepath:" 
+	" ReadPathE &runtimepath
+call _calcPackpath()
+	" echom "Packpath:" 
+	" ReadPathE &packpath
 call _SourceAllVimrc()
