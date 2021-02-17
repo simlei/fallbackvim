@@ -11,6 +11,10 @@ else
         which vim
     )
 fi
+if [[ $1 == "--PRINT_PATH" ]]; then
+    echo "$origvim"
+    exit 0
+fi
 passedargs=()
 while [[ ! -z ${1:+x} ]]; do
     if [[ "$1" == "--orig-vim" ]]; then
