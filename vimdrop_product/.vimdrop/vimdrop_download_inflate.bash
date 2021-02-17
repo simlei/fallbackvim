@@ -1,4 +1,4 @@
-: ${tmpdir:="/tmp/simlei_vimdrop"} && \
+: ${tmpdir:="$PWD/vimdrop"} && \
 : ${tarloc:="https://tinyurl.com/vimdroptar2"} && \
     mkdir -p "$tmpdir" && \
     ( cd "$tmpdir" && \

@@ -1,7 +1,7 @@
     command! -bar -nargs=1 AddRcVim  call add(vimruntime.stock_vim_init.vimrc_spec.rc, <q-args>)
     command! -bar -nargs=1 AddRcGvim call add (vimruntime.stock_vim_init.gvimrc_spec.rc, <q-args>)
     command! -bar -nargs=1 AddRcDir  AddRcVim <args>/vimrc | AddRcGvim <args>/gvimrc
-    command! -bar -nargs=1 AddRcLayer  AddRcVim <args>/vimrc | AddRcGvim <args>/gvimrc | PathAddRTP <args> | PathAddPP <args>
+    command! -bar -nargs=1 AddRcLayer  AddRcVim <args>/vimrc | AddRcGvim <args>/gvimrc | PathAddRTP <args> | PathAddPP <args> | PathAddAfterRTP <args>/after
     command! -nargs=1 -bar PathAddPP call add(g:vimruntime.stock_vim_init.prependPPList, <f-args>)
     command! -nargs=1 -bar PathAddRTP call add(g:vimruntime.stock_vim_init.prependRTPList, <f-args>)
     command! -nargs=1 -bar PathAddAfterPP call add(g:vimruntime.stock_vim_init.appendPPList, <f-args>)

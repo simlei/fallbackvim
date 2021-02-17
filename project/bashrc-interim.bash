@@ -49,7 +49,7 @@ vimdrop_build() {
     cat > "$targetabs/.vimdrop/vimdrop_inflate.bash" <<-'EOF'
 _declare_dirvar() { local _dir="${BASH_SOURCE[0]}"; _dir="${_dir%/*}"; local varname="${1:-dir}"; local count="${2:-1}"; while [[ "$count" -gt 0 ]]; do _dir="${_dir%/*}"; let count-- || :; done; eval "$varname"'="$_dir"'; }
 _declare_dirvar vimdropdir 0
-_declare_dirvar vimroot 1
+vimroot="${1:-$PWD}"
 cd "$vimroot"
 tf="$vimdropdir/repo.tar.gz"; tar -xzf "$tf"
 for file in "$vimdropdir"/part_*.tar.gz; do
@@ -58,7 +58,7 @@ for file in "$vimdropdir"/part_*.tar.gz; do
 done
 EOF
     cat > "$targetabs/.vimdrop/vimdrop_download_inflate.bash" <<-"EOF"
-: ${tmpdir:="/tmp/simlei_vimdrop"} && \
+: ${tmpdir:="$PWD"} && \
 : ${tarloc:="https://tinyurl.com/vimdroptar2"} && \
     mkdir -p "$tmpdir" && \
     ( cd "$tmpdir" && \
