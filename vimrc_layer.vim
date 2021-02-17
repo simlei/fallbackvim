@@ -1,5 +1,10 @@
 let g:ycm_auto_hover=''
 
+" macro for time addition
+nmap ;S '<:exec "'<,'>normal df-dlfhDA+ "<CR>gv:j<CR>$hD"zxili<C-R>=<C-R>z<CR>
+xmap ;S <Esc>'<;S
+xmap ,,<CR> "zy<Esc>:call system('xdg-open ' . shellescape('<C-r>z'))
+
 "" default dispatch stuff
 let g:_dispatch_opts = "-compiler=python"
 let g:_dispatch_listfile = expand("<sfile>:p:h")."/project_skel/dispatches.bash"
@@ -28,28 +33,30 @@ nmap <F10>" :e <C-r>=g:_regfiles_dir<CR><CR>
 
 nmap ,,<CR> :let @z=expand("<cfile>")<CR>:Viewer z<CR>
 
-nnoremap Q q
-xnoremap Q q
-nmap <nowait> q <plug>(Mac_Play)
-nmap <nowait> ,q <plug>(Mac_RecordNew)
-xmap <nowait> q <plug>(Mac_Play)
-xmap <nowait> ,q <plug>(Mac_RecordNew)
-nmap ;qh :DisplayMacroHistory<cr>
+" nnoremap Q q
+" xnoremap Q q
+" nmap <nowait> q <plug>(Mac_Play)
+" nmap <nowait> ,q <plug>(Mac_RecordNew)
+" xmap <nowait> q <plug>(Mac_Play)
+" xmap <nowait> ,q <plug>(Mac_RecordNew)
+" nmap ;qh :DisplayMacroHistory<cr>
 
-nmap ;qk <plug>(Mac_RotateBack)
-nmap ;qj <plug>(Mac_RotateForward)
+" nmap ;qk <plug>(Mac_RotateBack)
+" nmap ;qj <plug>(Mac_RotateForward)
 
-nmap ;qa <plug>(Mac_Append)
-nmap ;qA <plug>(Mac_Prepend)
+" nmap ;qa <plug>(Mac_Append)
+" nmap ;qA <plug>(Mac_Prepend)
 
-nmap [m <plug>(Mac_RotateBack)
-nmap ]m <plug>(Mac_RotateForward)
+" nmap [m <plug>(Mac_RotateBack)
+" nmap ]m <plug>(Mac_RotateForward)
 
 " me = macro execute named
-nmap <leader>me <plug>(Mac_SearchForNamedMacroAndPlay)
-nmap <leader>ms <plug>(Mac_SearchForNamedMacroAndSelect)
-nmap <leader>mng <plug>(Mac_NameCurrentMacro)
-nmap <leader>mnf <plug>(Mac_NameCurrentMacroForFileType)
+" nmap <leader>me <plug>(Mac_SearchForNamedMacroAndPlay)
+" nmap <leader>ms <plug>(Mac_SearchForNamedMacroAndSelect)
+" nmap <leader>mng <plug>(Mac_NameCurrentMacro)
+" nmap <leader>mnf <plug>(Mac_NameCurrentMacroForFileType)
+
+
 
 command! -nargs=1 Rege call _Open_Regfile(<f-args>)
 fun! _Open_Regfile(regname) abort
@@ -163,10 +170,6 @@ fun! _kill_dispatch() abort
     endif
 endf
 
-" Fugitive
-nmap ;FM :Gvdiffsplit!<CR>
-nmap ;Fm :Git merge<CR>
-nmap ;FW :Gwrite<CR>
 
 " Python crutches
 imap <Insert>pp print(f"")<Left><Left>
@@ -312,26 +315,18 @@ nmap ;<Space><Space> :Dispatch<CR>
 
 nmap ;<Space>gm :e <C-r>=g:_dispatch_listfile<CR><CR>
 nmap ;<Space>gf :e <C-r>=substitute(execute('FocusDispatch'), '^\n[^/]*\([^ ]*\).*', '\1', '')<CR><CR>
-nmap ;<Space>f :FocusDispatch <C-r>=_GetDispatchOpts()<CR> <C-r>5
-nmap ;<Space>F :FocusDispatch! <C-r>=_GetDispatchOpts()<CR> <C-r>5
-nmap ;<Space><Space> :Dispatch <C-r>=_GetDispatchOpts()<CR><CR>
-nmap ;<Space>5 :Dispatch <C-r>=_GetDispatchOpts()<CR> <C-r>5<CR>
+nmap ;<Space>f :FocusDispatch <C-r>5
+nmap ;<Space>F :FocusDispatch! <C-r>5
+nmap ;<Space><Space> :Dispatch <CR>
+nmap ;<Space>5 :Dispatch  <C-r>5<CR>
 nmap ;<Space>mM :let g:_dispatch_listfile = expand("%:p")<CR>
 nmap ;<Space>ma :let @z=expand("%:p")<CR>:sp<CR>;<Space>gmGo<C-r>z<Esc>
 nmap ;<Space>? :nmap ;<lt>Space><CR>
 
-fun! _GetDispatchOpts() abort
-    return g:_dispatch_opts
-endf
-if ! exists('g:_dispatch_opts')
-    let g:_dispatch_opts = ""
-endif
 nmap ;<Space>mf :call SelectOne(funcref("_Dispatch_Focus_Receiver"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 nmap ;<Space>m<Space> :call SelectOne(funcref("_Dispatch_Receiver"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 nmap ;<Space>M<Space> :call SelectOne(funcref("_Dispatch_Receiver_Manual"), _Dispatch_ParseFile(g:_dispatch_listfile))<CR>
 
-
-" let g:_dispatch_opts = "-compiler=pyscript"
 
 fun! _Linemacros(lines) abort
     let result = []
@@ -426,8 +421,15 @@ cmap <C-R>5 <C-R>=expand("%:p")<CR>
 
 " Only for the duration.. .(Mappigns){{{
 nmap <F10>G :Grepper -dir repo,file<Space>
-" runtime plugin/grepper.vim
+nmap gp  <plug>(GrepperOperator)
+xmap gp  <plug>(GrepperOperator)
+
+let g:grepper = {}
+let g:grepper.operator = {}
+runtime plugin/grepper.vim
+let g:grepper.tools = ['grep', 'git']
 " let g:grepper.git.grepprg .= 'i'
+let g:grepper.operator.dir="cwd"
 
 
 imap <Insert>a ${[@]}<Left><Left><Left><Left>
@@ -765,6 +767,11 @@ nmap <silent> <S-up> :set lazyredraw<CR><Leader>j<Leader>ck<Leader>X:set nolazyr
 nmap <silent> <S-down> :set lazyredraw<CR><Leader>j<Leader>cj<Leader>X:set nolazyredraw<CR>
 nmap <silent> <C-Up> ,cpk<c-m>
 nmap <silent> <C-Down> ,cpj<c-m>
+
+nmap ,cL ,cp<C-w>L<C-w>p
+
+nmap ,CJ :colder<CR>
+nmap ,CK :cnewer<CR>
 
 "TODO: bug: <C-w><Up> changes jump history
 nmap ,c<Space> <C-w>b10<C-w>+<C-w>p
@@ -1959,6 +1966,7 @@ nnoremap ;;y :Filetypes<CR>
 "}}}
 " __ FOLDING{{{
 
+nmap <F10>zf <Home>f{A<Space>#{{{<Esc><Home>f{%A<Space>#}}}<Esc>F}%
 command! -nargs=0 Marker call ApplyMarkerFolding()
 fun! ApplyMarkerFolding() abort
     set fdm=marker

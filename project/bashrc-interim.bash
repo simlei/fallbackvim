@@ -16,7 +16,7 @@ export PATH="$project__fbvim__Droot/bin:$PATH"
 vim_projectdrop() {
     mkdir ./project && cp -r "$project__fbvim__Droot/project_skel"/* ./project/
     echo "source $PWD/project/bashrc-interim.bash" >> "$HOME/.bashrc"
-    vim ./project/bashrc-interim.bash && exec bash
+    vim -c "call feedkeys(':%s/XXX//gODOD')" ./project/bashrc-interim.bash && exec bash
 }
 
 # tar plugins into .vimdrop

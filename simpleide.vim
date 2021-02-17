@@ -8,26 +8,31 @@ fun! _SetupIDEProjectVars() abort
         let g:project.vim.dispatch = {}
     " endif
 endf
-fun! _SetupIDEProject(idesrc) abort
+fun! _SetupIDEProject(idesrc, ...) abort
     call _SetupIDEProjectVars()
-    let idedir=fnamemodify(a:idesrc, ":h")
-    let projdir=fnamemodify(idedir, ":h")
+    let Frc=fnamemodify(a:idesrc, ":p")
+    let Dide=fnamemodify(Frc, ":p:h")
+    let Dprojdef=get(a:, 1, fnamemodify(Dide, ":h"))
+    let Droot=get(a:, 1, fnamemodify(Dide, ":h:h"))
 
-    let g:project.loc.Droot = projdir
-    let g:project.loc.Dprojectroot = idedir
+    let g:project.loc.Droot = Droot
+    let g:project.loc.Dprojdef = Dprojdef
+    let g:project.loc.Dide = Dide
 
     " e.g. the dispatch file is something for the shell, too
-    let g:project.loc.Fdispatches = g:project.loc.Dprojectroot . "/dispatches.bash"
+    let g:project.vim.loc.Fdispatches = g:project.loc.Dide . "/dispatches.bash"
 
-    let g:project.vim.loc.Droot = idedir . "/vim"
+    let g:project.vim.loc.Droot = g:project.loc.Dide
     let g:project.vim.loc.Dsessions = g:project.vim.loc.Droot . "/" . "sessions"
     let g:project.vim.loc.Dregs = g:project.vim.loc.Droot . "/" . "regs"
     let g:project.vim.loc.Frc = a:idesrc
 
     " plugins are so common to configure that they are pulled in to main NS
-    let g:project.vim.dispatch.opts = "-compiler=python"
+    let g:project.vim.dispatch.Flist = g:project.vim.loc.Fdispatches
+
+    " These lines are obsolete, delete soon
     " let g:project.vim.dispatch.opts = ""
-    let g:project.vim.dispatch.Flist = g:project.loc.Fdispatches
+    " let g:project.vim.dispatch.opts = ""
 
     let g:project.name = "#UNSET#"
     if ! exists("g:_simpleide_projname")
@@ -65,7 +70,6 @@ endf
 
 fun! _PerformProjectSettings() abort
     " bridge let effective = new
-    let g:_dispatch_opts = g:project.vim.dispatch.opts
     let g:_dispatch_listfile = g:project.vim.dispatch.Flist
     let g:_regfiles_dir = g:project.vim.loc.Dregs
 endf
@@ -103,7 +107,6 @@ fun! _project_register_as_vimide() abort
             let servername = g:project.name
         endif
         call remote_startserver(servername)
-        echom "started server: " . servername
     endif
     call system("currentproject_vimide_setservername " . v:servername)
 endfun

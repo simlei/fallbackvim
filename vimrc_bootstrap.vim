@@ -28,9 +28,10 @@ if ! exists("g:vimruntime.ignore_further_bootstrapping") || g:vimruntime.ignore_
     let vimruntime.bootstrap.vimrc.sourced_lastrun = []
 
     "sourcing definitions in function and command, execution for first time
-    fun! _SourceAllVimrc() abort
+    "TODO: should this function declare 'abort'?
+    fun! _SourceAllVimrc()
         let g:vimruntime.bootstrap.vimrc.sourced_lastrun = []
-        try
+        " try
         for rcfile in g:vimruntime.stock_vim_init.vimrc_spec.rc
             execute printf("source %s", rcfile)
             call add(g:vimruntime.bootstrap.vimrc.sourced, rcfile)
@@ -41,7 +42,7 @@ if ! exists("g:vimruntime.ignore_further_bootstrapping") || g:vimruntime.ignore_
             " execute printf("source %s", wrapupRcfile)
             " call add(g:vimruntime.bootstrap.vimrc.sourced, wrapupRcfile)
             " call add(g:vimruntime.bootstrap.vimrc.sourced_lastrun, wrapupRcfile)
-        endtry
+        " endtry
     endf
 
     " Set it off...
@@ -59,7 +60,6 @@ if ! exists("g:vimruntime.ignore_further_bootstrapping") || g:vimruntime.ignore_
         let &packpath = join(beforeParts+recalculatedParts+afterParts, ",")
     endfun
 
-    echom "setting runtimepaths in bootstrapping"
     call _calcRuntimepath()
         " echom "Runtimepath:" 
         " ReadPathE &runtimepath
@@ -68,6 +68,5 @@ if ! exists("g:vimruntime.ignore_further_bootstrapping") || g:vimruntime.ignore_
         " ReadPathE &packpath
 endif
 
-echom "sourcing all vimrc files"
 call _SourceAllVimrc()
 
